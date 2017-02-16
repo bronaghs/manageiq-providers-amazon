@@ -103,11 +103,7 @@ class ManageIQ::Providers::Amazon::CloudManager < ManageIQ::Providers::CloudMana
   end
 
   def self.default_blacklisted_event_names
-    %w(
-      ConfigurationSnapshotDeliveryCompleted
-      ConfigurationSnapshotDeliveryStarted
-      ConfigurationSnapshotDeliveryFailed
-    )
+    Settings.blacklisted_event_names
   end
 
   #

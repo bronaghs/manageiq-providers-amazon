@@ -47,3 +47,7 @@
         :ems_refresh_worker_amazon_network: {}
         :ems_refresh_worker_amazon_ebs_storage: {}
         :ems_refresh_worker_amazon_s3: {}
+:blacklisted_event_names:
+  - ConfigurationSnapshotDeliveryCompleted
+  - ConfigurationSnapshotDeliveryStarted
+  - ConfigurationSnapshotDeliveryFailed
