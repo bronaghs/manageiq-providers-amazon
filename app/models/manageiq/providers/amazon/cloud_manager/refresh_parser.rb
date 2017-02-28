@@ -176,6 +176,8 @@ class ManageIQ::Providers::Amazon::CloudManager::RefreshParser < ManageIQ::Provi
     name ||= $1 if location =~ /^(.+?)(\.(image|img))?\.manifest\.xml$/
     name ||= uid
 
+    labels = parse_labels(instance)
+
     new_result = {
       :type               => ManageIQ::Providers::Amazon::CloudManager::Template.name,
       :uid_ems            => uid,
@@ -185,6 +187,7 @@ class ManageIQ::Providers::Amazon::CloudManager::RefreshParser < ManageIQ::Provi
       :vendor             => "amazon",
       :raw_power_state    => "never",
       :template           => true,
+      :labels             => labels,
       # the is_public flag here avoids having to make an additional API call
       # per image, since we already know whether it's a public image
       :publicly_available => is_public,
@@ -223,6 +226,8 @@ class ManageIQ::Providers::Amazon::CloudManager::RefreshParser < ManageIQ::Provi
       :hostname  => instance.public_dns_name.presence
     }.delete_nils
 
+    labels = parse_labels(instance)
+
     new_result = {
       :type                => ManageIQ::Providers::Amazon::CloudManager::Vm.name,
       :uid_ems             => uid,
@@ -231,7 +236,7 @@ class ManageIQ::Providers::Amazon::CloudManager::RefreshParser < ManageIQ::Provi
       :vendor              => "amazon",
       :raw_power_state     => status,
       :boot_time           => instance.launch_time,
-
+      :labels              => labels,
       :hardware            => {
         :bitness              => architecture_to_bitness(instance.architecture),
         :virtualization_type  => instance.virtualization_type,
@@ -386,5 +391,25 @@ class ManageIQ::Providers::Amazon::CloudManager::RefreshParser < ManageIQ::Provi
       :last_updated           => resource.last_updated_timestamp
     }
     return uid, new_result
+  end
+
+  def parse_labels(entity)
+    parse_identifying_attributes(entity.tags)
+  end
+
+  def parse_identifying_attributes(attributes)
+    result = []
+    return result if attributes.blank?
+    attributes.each do |struct|
+      custom_attr = {
+        :section => 'labels',
+        :name    => struct[:key].to_s,
+        :value   => struct[:value],
+        :source  => 'amazon'
+      }
+      result << custom_attr
+    end
+
+    result
   end
 end

@@ -11,6 +11,7 @@
     #   :name: Special Region
     #   :hostname: ec2.spec-region-1.amazonaws.com
     #   :description: Super Special Region
+
 :ems_refresh:
   :ec2:
     :get_private_images: true

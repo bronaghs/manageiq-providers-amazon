@@ -336,7 +336,7 @@ module AwsRefresherSpecCommon
       :cpu_reserve_expand    => nil,
       :cpu_limit             => nil,
       :cpu_shares            => nil,
-      :cpu_shares_level      => nil
+      :cpu_shares_level      => nil,
     )
 
     expect(v.ext_management_system).to eq(@ems)
@@ -403,6 +403,7 @@ module AwsRefresherSpecCommon
     v.with_relationship_type("genealogy") do
       expect(v.parent).to eq(@template)
     end
+    expect(v.custom_attributes.find_by_name("Name")).to eq("EmsRefreshSpec-PoweredOn-Basic3")
   end
 
   def assert_specific_vm_powered_off
